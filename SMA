@@ -1,0 +1,31 @@
+from datetime import datetime
+import backtrader as bt
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+dataset = pd.read_csv('C:\\Users\\Rama\\Desktop\\INR.csv')
+x=dataset.iloc[:,5]
+def movingaverage(values,window) :
+     weights=np.repeat(1.0,window)/window
+     smas=np.convolve(values,weights,'valid')
+     return smas
+SMA1= movingaverage(x,5)
+SMA2=movingaverage(x,20)
+crossover = bt.ind.CrossOver(SMA1, SMA2)
+
+plt.figure(figsize=(15,5))
+plt.plot(dataset['Close'],lw=1, label='NSE Prices')
+plt.plot(SMA1,'g',lw=1, label='5-day SMA1 (green)')
+plt.plot(SMA2,'r', lw=1, label='20-day SMA2 (red)')
+plt.legend(loc=2,prop={'size':11})
+plt.grid(True)
+plt.setp(plt.gca().get_xticklabels(), rotation=30)
+
+list(SMA1)[0]
+list(SMA2)[0]
+
+if list(SMA1)[0] < list(SMA2)[0]:
+    print ("BUY")
+else:
+    print("SELL")
